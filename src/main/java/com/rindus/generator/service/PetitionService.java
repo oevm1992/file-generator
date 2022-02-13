@@ -22,7 +22,7 @@ public class PetitionService {
     }
 
     public Object exchange(String url, Object body, Class c, HttpEntity http, HttpMethod method) throws Exception {
-        return restTemplate.exchange(url, method, http, PostModel.class).getBody();
+        return restTemplate.exchange(url, method, http, c, body).getBody();
     }
 
     public void delete(String url) throws Exception {
