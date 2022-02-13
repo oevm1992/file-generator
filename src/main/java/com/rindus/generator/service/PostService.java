@@ -1,20 +1,14 @@
 package com.rindus.generator.service;
 
-import com.google.gson.Gson;
+import com.rindus.generator.enums.Extension;
+import com.rindus.generator.util.FileUtils;
 import com.rindus.generator.model.PostModel;
-import com.rindus.generator.model.PostModelList;
-import com.thoughtworks.xstream.XStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -24,26 +18,37 @@ public class PostService {
 
     @Value("${posts.path}")
     private String postPath;
-    
+
     @Autowired
     private RestTemplate restTemplate;
 
-    public byte[] getAllPostsAsJson() throws IOException {
-        return createJsonFileByte(restTemplate.getForObject(jsonPlaceBaseUrl.concat(postPath), List.class));
+    @Autowired
+    private PetitionService petition;
+
+    public byte[] getPostFile(String extension, Long id) throws Exception {
+        PostModel getResponse = (PostModel) petition.get(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), PostModel.class);
+        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(getResponse) : FileUtils.createXmlFileByte(getResponse);
     }
 
-    public byte[] getAllPostsAsXml() throws IOException {
-        return createXmlFileByte(restTemplate.getForObject(jsonPlaceBaseUrl.concat(postPath), PostModelList.class));
+    public byte[] createPostFile(PostModel post, String extension) throws Exception {
+        PostModel postResponse = (PostModel) petition.post(jsonPlaceBaseUrl.concat(postPath), post, PostModel.class);
+        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
     }
 
-    private byte[] createJsonFileByte(Object data) throws IOException {
-        Gson gson = new Gson();
-        return gson.toJson(data).getBytes(StandardCharsets.UTF_8);
+    public byte[] updatePostFile(PostModel post, Long id, String extension) throws Exception {
+        HttpEntity<PostModel> entity = new HttpEntity<PostModel>(post);
+        PostModel postResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PUT);
+        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
     }
 
-    private byte[] createXmlFileByte(Object data) throws IOException {
-        XStream xstream = new XStream();
-        return xstream.toXML(data).getBytes(StandardCharsets.UTF_8);
+    public byte[] patchPostFile(PostModel post, Long id, String extension) throws Exception {
+        HttpEntity<PostModel> entity = new HttpEntity<PostModel>(post);
+        PostModel postResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PATCH);
+        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+    }
+
+    public void deletePost(Long id) throws Exception {
+        petition.delete(jsonPlaceBaseUrl.concat(postPath).concat("/" + id));
     }
 
 }
