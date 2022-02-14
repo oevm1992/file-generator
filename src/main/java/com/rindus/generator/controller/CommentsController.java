@@ -68,7 +68,7 @@ public class CommentsController {
             commentService.deleteComment(id);
             return new ResponseEntity<>(String.format("Comment with id: %s deleted correctly", id), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(String.format("Could not delete Post with id %s because %s ", id, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(String.format("Could not delete Comment with id %s because %s ", id, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

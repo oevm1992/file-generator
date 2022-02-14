@@ -11,16 +11,6 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class FileGeneratorService {
 
-    private byte[] createJsonFileByte(Object data) throws Exception {
-        Gson gson = new Gson();
-        return gson.toJson(data).getBytes(StandardCharsets.UTF_8);
-    }
-
-    private byte[] createXmlFileByte(Object data) throws Exception {
-        XStream xstream = new XStream();
-        return xstream.toXML(data).getBytes(StandardCharsets.UTF_8);
-    }
-
     public byte[] createFile(Object data, FileExtension fileExtension) throws Exception {
         if (FileExtension.XML.equals(fileExtension)) {
             return createXmlFileByte(data);
@@ -29,6 +19,16 @@ public class FileGeneratorService {
             return createJsonFileByte(data);
         }
         throw new FileGeneratorException("Invalid file extension");
+    }
+
+    private byte[] createJsonFileByte(Object data) throws Exception {
+        Gson gson = new Gson();
+        return gson.toJson(data).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private byte[] createXmlFileByte(Object data) throws Exception {
+        XStream xstream = new XStream();
+        return xstream.toXML(data).getBytes(StandardCharsets.UTF_8);
     }
 
 }
