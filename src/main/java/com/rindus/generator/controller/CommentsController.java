@@ -4,6 +4,9 @@ import com.rindus.generator.exception.FileGeneratorException;
 import com.rindus.generator.file.FileExtension;
 import com.rindus.generator.model.CommentModel;
 import com.rindus.generator.service.CommentService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/comments")
+@Tag(name = "Rindus API", description = "File service for Rindus")
 public class CommentsController {
 
     private CommentService commentService;
@@ -23,6 +27,11 @@ public class CommentsController {
         this.commentService = commentService;
     }
 
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity getComment(@PathVariable Long id, @RequestParam String extension) {
         HttpHeaders responseHeaders = new HttpHeaders();
