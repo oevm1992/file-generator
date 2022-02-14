@@ -1,14 +1,12 @@
 package com.rindus.generator.service;
 
-import com.rindus.generator.enums.Extension;
+import com.rindus.generator.file.FileExtension;
 import com.rindus.generator.model.CommentModel;
-import com.rindus.generator.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CommentService {
@@ -20,31 +18,31 @@ public class CommentService {
     private String commentsPath;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private PetitionService petition;
 
-    public byte[] getCommentFile(String extension, Long id) throws Exception {
-        CommentModel getResponse = (CommentModel) petition.get(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), CommentModel.class);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(getResponse) : FileUtils.createXmlFileByte(getResponse);
+    @Autowired
+    FileGeneratorService fileGeneratorService;
+
+    public byte[] getCommentFile(FileExtension extension, Long id) throws Exception {
+        CommentModel resourceResponse = (CommentModel) petition.get(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), CommentModel.class);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] createCommentFile(CommentModel comment, String extension) throws Exception {
-        CommentModel postResponse = (CommentModel) petition.post(jsonPlaceBaseUrl.concat(commentsPath), comment, CommentModel.class);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+    public byte[] createCommentFile(CommentModel comment, FileExtension extension) throws Exception {
+        CommentModel resourceResponse = (CommentModel) petition.post(jsonPlaceBaseUrl.concat(commentsPath), comment, CommentModel.class);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] updateCommentFile(CommentModel comment, Long id, String extension) throws Exception {
+    public byte[] updateCommentFile(CommentModel comment, Long id, FileExtension extension) throws Exception {
         HttpEntity<CommentModel> entity = new HttpEntity<CommentModel>(comment);
-        CommentModel postResponse = (CommentModel) petition.exchange(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), comment, CommentModel.class, entity, HttpMethod.PUT);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+        CommentModel resourceResponse = (CommentModel) petition.exchange(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), comment, CommentModel.class, entity, HttpMethod.PUT);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] patchCommentFile(CommentModel comment, Long id, String extension) throws Exception {
+    public byte[] patchCommentFile(CommentModel comment, Long id, FileExtension extension) throws Exception {
         HttpEntity<CommentModel> entity = new HttpEntity<CommentModel>(comment);
-        CommentModel postResponse = (CommentModel) petition.exchange(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), comment, CommentModel.class, entity, HttpMethod.PATCH);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+        CommentModel resourceResponse = (CommentModel) petition.exchange(jsonPlaceBaseUrl.concat(commentsPath).concat("/" + id), comment, CommentModel.class, entity, HttpMethod.PATCH);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
     public void deleteComment(Long id) throws Exception {

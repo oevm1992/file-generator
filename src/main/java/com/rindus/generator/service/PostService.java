@@ -1,7 +1,6 @@
 package com.rindus.generator.service;
 
-import com.rindus.generator.enums.Extension;
-import com.rindus.generator.util.FileUtils;
+import com.rindus.generator.file.FileExtension;
 import com.rindus.generator.model.PostModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,26 +24,29 @@ public class PostService {
     @Autowired
     private PetitionService petition;
 
-    public byte[] getPostFile(String extension, Long id) throws Exception {
-        PostModel getResponse = (PostModel) petition.get(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), PostModel.class);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(getResponse) : FileUtils.createXmlFileByte(getResponse);
+    @Autowired
+    FileGeneratorService fileGeneratorService;
+
+    public byte[] getPostFile(FileExtension extension, Long id) throws Exception {
+        PostModel resourceResponse = (PostModel) petition.get(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), PostModel.class);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] createPostFile(PostModel post, String extension) throws Exception {
-        PostModel postResponse = (PostModel) petition.post(jsonPlaceBaseUrl.concat(postPath), post, PostModel.class);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+    public byte[] createPostFile(PostModel post, FileExtension extension) throws Exception {
+        PostModel resourceResponse = (PostModel) petition.post(jsonPlaceBaseUrl.concat(postPath), post, PostModel.class);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] updatePostFile(PostModel post, Long id, String extension) throws Exception {
+    public byte[] updatePostFile(PostModel post, Long id, FileExtension extension) throws Exception {
         HttpEntity<PostModel> entity = new HttpEntity<PostModel>(post);
-        PostModel postResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PUT);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+        PostModel resourceResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PUT);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
-    public byte[] patchPostFile(PostModel post, Long id, String extension) throws Exception {
+    public byte[] patchPostFile(PostModel post, Long id, FileExtension extension) throws Exception {
         HttpEntity<PostModel> entity = new HttpEntity<PostModel>(post);
-        PostModel postResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PATCH);
-        return Extension.JSON.getId().equals(extension) ? FileUtils.createJsonFileByte(postResponse) : FileUtils.createXmlFileByte(postResponse);
+        PostModel resourceResponse = (PostModel) petition.exchange(jsonPlaceBaseUrl.concat(postPath).concat("/" + id), post, PostModel.class, entity, HttpMethod.PATCH);
+        return fileGeneratorService.createFile(resourceResponse, extension);
     }
 
     public void deletePost(Long id) throws Exception {

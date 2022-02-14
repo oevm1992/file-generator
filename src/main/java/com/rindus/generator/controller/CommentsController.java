@@ -1,6 +1,7 @@
 package com.rindus.generator.controller;
 
-import com.rindus.generator.enums.Extension;
+import com.rindus.generator.exception.FileGeneratorException;
+import com.rindus.generator.file.FileExtension;
 import com.rindus.generator.model.CommentModel;
 import com.rindus.generator.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,66 +24,62 @@ public class CommentsController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity getPosts(@PathVariable Long id, @RequestParam String extension) {
+    public ResponseEntity getComment(@PathVariable Long id, @RequestParam String extension) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-disposition", "attachment; filename=all_posts." + extension);
         try {
-            if (Extension.JSON.getId().equals(extension) || Extension.XML.getId().equals(extension))
-                return new ResponseEntity<>(commentService.getCommentFile(extension, id), responseHeaders, HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Could not create File param should be xml or json", responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(commentService.getCommentFile(FileExtension.valueOf(extension.toUpperCase()), id), responseHeaders, HttpStatus.OK);
+        } catch (IllegalArgumentException | FileGeneratorException e) {
+            return new ResponseEntity<>("Could not create File. File Extension is not valid", responseHeaders, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not create File because: " + e.getMessage(), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity createPost(@RequestBody CommentModel comment, @RequestParam String extension) {
+    public ResponseEntity createComment(@RequestBody CommentModel comment, @RequestParam String extension) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-disposition", "attachment; filename=create_post." + extension);
         try {
-            if (Extension.JSON.getId().equals(extension) || Extension.XML.getId().equals(extension))
-                return new ResponseEntity<>(commentService.createCommentFile(comment, extension), responseHeaders, HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Could not create File param should be xml or json", responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(commentService.createCommentFile(comment, FileExtension.valueOf(extension.toUpperCase())), responseHeaders, HttpStatus.OK);
+        } catch (IllegalArgumentException | FileGeneratorException e) {
+            return new ResponseEntity<>("Could not create File. File Extension is not valid", responseHeaders, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not create File because: " + e.getMessage(), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity updatePost(@PathVariable Long id, @RequestBody CommentModel comment, @RequestParam String extension) {
+    public ResponseEntity updateComment(@PathVariable Long id, @RequestBody CommentModel comment, @RequestParam String extension) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-disposition", "attachment; filename=create_post." + extension);
         try {
-            if (Extension.JSON.getId().equals(extension) || Extension.XML.getId().equals(extension))
-                return new ResponseEntity<>(commentService.updateCommentFile(comment, id, extension), responseHeaders, HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Could not create File param should be xml or json", responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(commentService.updateCommentFile(comment, id, FileExtension.valueOf(extension.toUpperCase())), responseHeaders, HttpStatus.OK);
+        } catch (IllegalArgumentException | FileGeneratorException e) {
+            return new ResponseEntity<>("Could not create File. File Extension is not valid", responseHeaders, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not create File because: " + e.getMessage(), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity deletePost(@PathVariable Long id) {
+    public ResponseEntity deleteComment(@PathVariable Long id) {
         try {
             commentService.deleteComment(id);
-            return new ResponseEntity<>(String.format("Comment with id: %s deleted correctly", id), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(String.format("Comment with id: %s deleted correctly", id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(String.format("Could not delete Post with id %s because %s ", id, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity patchPost(@PathVariable Long id, @RequestBody CommentModel comment, @RequestParam String extension) {
+    public ResponseEntity patchComment(@PathVariable Long id, @RequestBody CommentModel comment, @RequestParam String extension) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-disposition", "attachment; filename=create_post." + extension);
         try {
-            if (Extension.JSON.getId().equals(extension) || Extension.XML.getId().equals(extension))
-                return new ResponseEntity<>(commentService.patchCommentFile(comment, id, extension), responseHeaders, HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Could not create File param should be xml or json", responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(commentService.patchCommentFile(comment, id, FileExtension.valueOf(extension.toUpperCase())), responseHeaders, HttpStatus.OK);
+        } catch (IllegalArgumentException | FileGeneratorException e) {
+            return new ResponseEntity<>("Could not create File. File Extension is not valid", responseHeaders, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not create File because: " + e.getMessage(), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
