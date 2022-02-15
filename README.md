@@ -21,7 +21,7 @@ Linux:
 apt install docker-compose
 ```
 
-After installing docker compose you can run the image with:
+After installing docker compose you can run the project with:
 
 ```
 docker-compose up
