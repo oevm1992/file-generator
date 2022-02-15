@@ -23,6 +23,4 @@ Doing a get method from the browser http://localhost:8081/posts/1?extension=json
 
 The backend was quite fun to develop. I hadn't worked with XML for a long time, so I tried quite a few different libraries until I got the one that best suited the needs of the project. Unfortunately I had many problems using the lombok libraries due to problems with the XML libraries, they did not work correctly. One thing to improve is to be able to use lombok with these libraries since it would give us a more readable and clean code.
 
-I had a problem with my front end repo and lost all changes I've made. It was an Angular project where you could access all endpoints and download files. I'll try to recover it maybe while you check out this backend API!
-
 
