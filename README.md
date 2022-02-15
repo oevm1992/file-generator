@@ -8,16 +8,32 @@ The project is developed with java 11 using Springboot Framework mainly. Other t
 
 ## Installation 
 
-After cloning the repository, you will need to run "docker-compose up" command inside a terminal in the main folder of the project. This application is made with Java and Spring Boot, so we have an embedded Tomcat server to be able to deploy it locally and also it will be running inside a docker container.
+After cloning the repository, you will need to run
+```
+docker-compose up
+```
+
+command inside a terminal in the main folder of the project. This application is made with Java and Spring Boot, so we have an embedded Tomcat server to be able to deploy it locally and also it will be running inside a docker container.
 
 Also you will need to install docker-compose with this command 
-Mac: brew install docker-compose
-Linux: apt install docker-compose
+Mac: 
+```
+brew install docker-compose
+```
+
+Linux: 
+```
+apt install docker-compose
+```
 
 ## Endpoints Information
 
 The project has swagger, so when you run the application, you can check the information of the endpoints in this url http://localhost:8081/swagger-ui/index.html?url=/v3/api-docs&validatorUrl=#/. Here you can see the request and response json structure and how to build it. Also you have a button "try it out" so you can test the endpoint. If you want to try it in a more traditional way, swagger creates the curl comand for you!
 Doing a get method from the browser http://localhost:8081/posts/1?extension=json will download a json file an doing http://localhost:8081/posts/1?extension=xml will download an xml file.
+
+## Front End
+
+To try it out with a Front end you could use this repository: https://github.com/oevm1992/file-generator-front. It has it's own steps to run it.
 
 ## Notes
 
