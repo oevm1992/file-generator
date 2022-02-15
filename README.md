@@ -17,7 +17,7 @@ Linux: apt install docker-compose
 ## Endpoints Information
 
 The project has swagger, so when you run the application, you can check the information of the endpoints in this url http://localhost:8081/swagger-ui/index.html?url=/v3/api-docs&validatorUrl=#/. Here you can see the request and response json structure and how to build it. Also you have a button "try it out" so you can test the endpoint. If you want to try it in a more traditional way, swagger creates the curl comand for you!
-Doing a get method from the browser http://localhost:8081/posts/1?extension=json will download a json file an doing http://localhost:8081/posts/1?extension=xml.
+Doing a get method from the browser http://localhost:8081/posts/1?extension=json will download a json file an doing http://localhost:8081/posts/1?extension=xml will download an xml file.
 
 ## Notes
 
