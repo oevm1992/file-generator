@@ -8,14 +8,9 @@ The project is developed with java 11 using Springboot Framework mainly. Other t
 
 ## Installation 
 
-After cloning the repository, you will need to run
-```
-docker-compose up
-```
+After cloning the repository, you will need to do:
 
-command inside a terminal in the main folder of the project. This application is made with Java and Spring Boot, so we have an embedded Tomcat server to be able to deploy it locally and also it will be running inside a docker container.
-
-Also you will need to install docker-compose with this command 
+You will need to install docker-compose with this command 
 Mac: 
 ```
 brew install docker-compose
@@ -25,6 +20,15 @@ Linux:
 ```
 apt install docker-compose
 ```
+
+After installing docker compose you can run the image with:
+
+```
+docker-compose up
+```
+
+command inside a terminal in the main folder of the project. This application is made with Java and Spring Boot, so we have an embedded Tomcat server to be able to deploy it locally and also it will be running inside a docker container.
+
 
 ## Endpoints Information
 
